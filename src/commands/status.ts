@@ -3,7 +3,6 @@ import {
     PermissionFlagsBits,
     SlashCommandStringOption,
     ChatInputCommandInteraction,
-    User
 } from 'discord.js';
 import { exec, ExecException } from 'child_process';
 import {isServerInitialized} from "../functions/isServerInitialized";
@@ -50,9 +49,7 @@ const statusCommand = {
 
         switch (action) {
             case 'restart':
-                const guildCount: number = client.guilds.cache.size;
-                const userInstallCount: number = client.users.cache.filter((u: User): boolean => u.bot === false).size;
-                await interaction.editReply(`🔄 Redémarrage terminé. Je suis opérationnel dans 5 secondes.\n→ Nombre de serveurs : ${guildCount}\n→ Nombre d'utilisateurs installés : ${userInstallCount}`);
+                await interaction.editReply(`🔄 Redémarrage terminé.\n→ Nombre de serveurs : ${client.guilds.cache.size}`);
                 console.log('Redémarrage demandé par', interaction.user.tag);
                 setTimeout((): never => process.exit(0), 1000);
                 break;
