@@ -2,9 +2,12 @@ import {
     SlashCommandBuilder,
     PermissionFlagsBits,
     SlashCommandStringOption,
-    ChatInputCommandInteraction } from 'discord.js';
+    ChatInputCommandInteraction,
+    User
+} from 'discord.js';
 import { exec, ExecException } from 'child_process';
 import {isServerInitialized} from "../functions/isServerInitialized";
+import {client} from "../index";
 
 const statusCommand = {
     data: new SlashCommandBuilder()
@@ -47,7 +50,9 @@ const statusCommand = {
 
         switch (action) {
             case 'restart':
-                await interaction.editReply('🔄 Redémarrage en cours...');
+                const guildCount: number = client.guilds.cache.size;
+                const userInstallCount: number = client.users.cache.filter((u: User): boolean => u.bot === false).size;
+                await interaction.editReply(`🔄 Redémarrage terminé. Je suis opérationnel dans 5 secondes.\n→ Nombre de serveurs : ${guildCount}\n→ Nombre d'utilisateurs installés : ${userInstallCount}`);
                 console.log('Redémarrage demandé par', interaction.user.tag);
                 setTimeout((): never => process.exit(0), 1000);
                 break;
