@@ -3,16 +3,17 @@ dotenv.config();
 
 import { REST, Routes, SlashCommandOptionsOnlyBuilder, ChatInputCommandInteraction } from 'discord.js';
 import commands from './commands';
+import {ClientWithCommands} from "./types/ClientWithCommands";
 
 async function main(): Promise<void> {
     const payload = commands
         .filter(
             (cmd: {
                 data?: SlashCommandOptionsOnlyBuilder;
-                execute?: (interaction: ChatInputCommandInteraction) => Promise<void>;
+                execute?: (interaction: ChatInputCommandInteraction, Client: ClientWithCommands) => Promise<void>;
             }): boolean | undefined => cmd?.data && typeof cmd.data.toJSON === 'function'
         )
-        .map((cmd: { data: SlashCommandOptionsOnlyBuilder; execute(interaction: ChatInputCommandInteraction): Promise<void> }) => cmd.data.toJSON());
+        .map((cmd: { data: SlashCommandOptionsOnlyBuilder; execute(interaction: ChatInputCommandInteraction, Client: ClientWithCommands): Promise<void> }) => cmd.data.toJSON());
 
     if (payload.length === 0) {
         console.warn('⚠️  Aucune commande à déployer.');

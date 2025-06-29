@@ -20,7 +20,7 @@ export const client = new Client({
 client.commands = new Collection();
 
 for (const command of commands) {
-    if (!command || !command.data || typeof command.data.name !== 'string') {
+    if (!command || !command.data) {
         console.warn('❌ Commande invalide ignorée : ', command);
         continue;
     }
@@ -49,4 +49,4 @@ client.once('ready', (): void => {
     });
 });
 
-client.login(DISCORD_TOKEN);
+client.login(DISCORD_TOKEN).then();

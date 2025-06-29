@@ -5,8 +5,8 @@ import {
     ChatInputCommandInteraction,
 } from 'discord.js';
 import { exec, ExecException } from 'child_process';
-import {isServerInitialized} from "../functions/isServerInitialized";
-import {client} from "../index";
+import { isServerInitialized } from "../functions/isServerInitialized";
+import {ClientWithCommands} from "../types/ClientWithCommands";
 
 const statusCommand = {
     data: new SlashCommandBuilder()
@@ -24,7 +24,7 @@ const statusCommand = {
         )
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
-    async execute(interaction: ChatInputCommandInteraction): Promise<void> {
+    async execute(interaction: ChatInputCommandInteraction, client: ClientWithCommands): Promise<void> {
         if (interaction.guild) {
             if (!(await isServerInitialized(interaction.guild.id))) {
                 await interaction.reply({

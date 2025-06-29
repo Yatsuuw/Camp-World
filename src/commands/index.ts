@@ -7,8 +7,9 @@ import statusCommand from './status';
 import searchCommand from "./search";
 import configProfilCommand from "./configProfil";
 import serverCommand from "./server";
+import {ClientWithCommands} from "../types/ClientWithCommands";
 
-const commands: { data: SlashCommandOptionsOnlyBuilder; execute(interaction: ChatInputCommandInteraction): Promise<void> }[] = [
+const commands: { data: SlashCommandOptionsOnlyBuilder; execute(interaction: ChatInputCommandInteraction, Client: ClientWithCommands): Promise<void> }[] = [
     serverCommand,
     sitePreferenceCommand,
     configProfilCommand,
