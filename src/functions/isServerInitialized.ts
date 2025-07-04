@@ -1,4 +1,4 @@
-import { pool } from "../utils/database";
+import { pool } from "../utils/database/database";
 import { PoolConnection } from "mariadb";
 
 export async function isServerInitialized(serverId: string): Promise<boolean> {

@@ -4,12 +4,14 @@ import {
     SlashCommandStringOption,
     PermissionFlagsBits
 } from 'discord.js';
-import fetchMyAnimeListManga from '../functions/Mangas/fetchMyAnimeListManga';
-import fetchAniListManga from "../functions/Mangas/fetchAniListManga";
+import fetchMyAnimeListMangas from '../functions/Mangas/fetchMyAnimeListMangas';
+import fetchAniListMangas from "../functions/Mangas/fetchAniListMangas";
 import getUserSitePreference from "../functions/userSitePreference";
 import fetchMyAnimeListAnimes from "../functions/Animes/fetchMyAnimeListAnimes";
 import fetchAniListAnimes from "../functions/Animes/fetchAniListAnimes";
 import { isServerInitialized } from "../functions/isServerInitialized";
+import fetchJikanAnimes from "../functions/Animes/fetchJikanAnimes";
+import fetchJikanMangas from "../functions/Mangas/fetchJikanMangas";
 
 const searchCommand = {
     data: new SlashCommandBuilder()
@@ -38,7 +40,8 @@ const searchCommand = {
                 .setRequired(false)
                 .addChoices(
                     { name: 'MyAnimeList', value: 'mal' },
-                    { name: 'AniList', value: 'anilist' }
+                    { name: 'AniList', value: 'anilist' },
+                    { name: 'Jikan', value: 'jikan' }
                 )
         )
         .setDefaultMemberPermissions(PermissionFlagsBits.SendMessages)
@@ -49,7 +52,6 @@ const searchCommand = {
         const type: string = interaction.options.getString('type', true);
         const query: string = interaction.options.getString('titre', true);
 
-        // Vérification serveur initialisé
         if (interaction.guild && !(await isServerInitialized(interaction.guild.id))) {
             await interaction.reply({
                 content: 'Le serveur n’est pas initialisé. Veuillez contacter un administrateur.',
@@ -60,30 +62,25 @@ const searchCommand = {
 
         await interaction.deferReply();
 
-        // Détermination du site
         const website: string = interaction.options.getString('site')
             ?? await getUserSitePreference(interaction.user.id);
 
         try {
-            if (type === 'anime' && website === 'mal') {
-                await fetchMyAnimeListAnimes(query, interaction);
-                return;
-            } else if (type === 'anime' && website === 'anilist') {
-                await fetchAniListAnimes(query, interaction);
-                return;
-            }
-
             if (type === 'anime') {
                 if (website === 'mal') {
                     await fetchMyAnimeListAnimes(query, interaction);
-                } else {
+                } else if (website === 'anilist') {
                     await fetchAniListAnimes(query, interaction);
+                } else {
+                    await fetchJikanAnimes(query, interaction);
                 }
             } else {
                 if (website === 'mal') {
-                    await fetchMyAnimeListManga(query, interaction);
+                    await fetchMyAnimeListMangas(query, interaction);
+                } else if (website === 'anilist') {
+                    await fetchAniListMangas(query, interaction);
                 } else {
-                    await fetchAniListManga(query, interaction);
+                    await fetchJikanMangas(query, interaction);
                 }
             }
         } catch (err) {

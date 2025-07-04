@@ -4,7 +4,7 @@ import {
     SlashCommandStringOption,
     PermissionFlagsBits,
 } from 'discord.js';
-import { pool } from '../utils/database';
+import { pool } from '../utils/database/database';
 import {isServerInitialized} from "../functions/isServerInitialized";
 
 const configProfilCommand = {

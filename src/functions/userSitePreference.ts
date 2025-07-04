@@ -1,4 +1,4 @@
-import { pool } from "../utils/database";
+import { pool } from "../utils/database/database";
 
 async function getUserSitePreference(userId: string): Promise<string> {
     try {

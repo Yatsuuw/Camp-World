@@ -1,18 +1,16 @@
 import axios, {AxiosResponse} from "axios";
 import {
-    ActionRowBuilder,
-    ButtonBuilder,
     ButtonInteraction,
-    ButtonStyle,
     ChatInputCommandInteraction,
     ComponentType,
     EmbedBuilder,
     Message,
     InteractionCollector,
-    CacheType,
     InteractionResponse,
     ReadonlyCollection
 } from "discord.js";
+import {createPaginationControls} from "../../utils/pagination/paginationControls";
+import {handlePaginationButton} from "../../utils/pagination/handlePaginationButton";
 
 export default async function fetchAniListAnimes(
     query: string,
@@ -118,49 +116,20 @@ export default async function fetchAniListAnimes(
             .setTimestamp();
     };
 
-    const controls: () => ActionRowBuilder<ButtonBuilder> = (): ActionRowBuilder<ButtonBuilder> =>
-        new ActionRowBuilder<ButtonBuilder>().addComponents(
-            new ButtonBuilder()
-                .setCustomId("prev")
-                .setLabel("⬅️ Précédent")
-                .setStyle(ButtonStyle.Primary)
-                .setDisabled(index === 0),
-            new ButtonBuilder()
-                .setCustomId("next")
-                .setLabel("➡️ Suivant")
-                .setStyle(ButtonStyle.Primary)
-                .setDisabled(index === results.length - 1),
-            new ButtonBuilder()
-                .setCustomId("select")
-                .setLabel("✅ Sélectionner")
-                .setStyle(ButtonStyle.Success),
-            new ButtonBuilder()
-                .setCustomId("delete")
-                .setLabel("🗑️ Supprimer")
-                .setStyle(ButtonStyle.Danger)
-        );
-
-    const message: Message<boolean> = await interaction.editReply({
+    const message: Message = await interaction.editReply({
         embeds: [generateEmbed(results[index])],
-        components: [controls()]
+        components: [createPaginationControls(index, results.length)]
     });
 
-    const collector: InteractionCollector<ButtonInteraction<CacheType>> = message.createMessageComponentCollector({
+    const collector: InteractionCollector<ButtonInteraction> = message.createMessageComponentCollector({
         componentType: ComponentType.Button,
         time: 120_000
     });
 
-    collector.on("collect", async (btn: ButtonInteraction): Promise<void | Message<boolean> | InteractionResponse<boolean>> => {
-        if (btn.user.id !== interaction.user.id) {
-            return btn.reply({ content: "❌ Ce bouton n'est pas pour toi !", ephemeral: true });
-        }
-        await btn.deferUpdate();
-
-        if (btn.customId === "next" && index < results.length - 1) {
-            index++;
-        } else if (btn.customId === "prev" && index > 0) {
-            index--;
-        }
+    collector.on("collect", async (btn: ButtonInteraction): Promise<void | Message | InteractionResponse> => {
+        const newIndexAnimes: number | null = await handlePaginationButton(btn, interaction.user.id, index, results.length);
+        if (newIndexAnimes === null) return;
+        index = newIndexAnimes;
 
         if (btn.customId === "select") {
             collector.stop("selected");
@@ -177,11 +146,11 @@ export default async function fetchAniListAnimes(
 
         await btn.editReply({
             embeds: [generateEmbed(results[index])],
-            components: [controls()]
+            components: [createPaginationControls(index, results.length)]
         });
     });
 
-    collector.on("end", (_: ReadonlyCollection<string, ButtonInteraction<CacheType>>, reason: string): void => {
+    collector.on("end", (_: ReadonlyCollection<string, ButtonInteraction>, reason: string): void => {
         if (reason !== "selected") {
             interaction.editReply({ components: [] }).catch((): void => {});
         }

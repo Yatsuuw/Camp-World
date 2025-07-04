@@ -6,7 +6,7 @@ import {
     User,
     EmbedBuilder,
 } from 'discord.js';
-import { pool } from '../utils/database';
+import { pool } from '../utils/database/database';
 import axios, { AxiosResponse } from 'axios';
 import * as cheerio from 'cheerio';
 import { CheerioAPI } from "cheerio";
