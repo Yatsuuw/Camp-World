@@ -1,5 +1,5 @@
 ### Introduction
-Bienvenue sur notre robot Discord dédié à la recherche de livres et de séries. En utilisant notre robot, vous acceptez les conditions d'utilisation décrites ci-dessous. Veuillez les lire attentivement.
+Bienvenue sur notre robot Discord dédié à la recherche de mangas, manhwas, manhuas, de séries et de films animés. En utilisant notre robot, vous acceptez les conditions d'utilisation décrites ci-dessous. Veuillez les lire attentivement.
 
 ### Acceptation des termes
 En utilisant notre robot Discord, vous acceptez de vous conformer à ces conditions d'utilisation. Si vous n'acceptez pas ces termes, veuillez ne pas utiliser notre robot.
