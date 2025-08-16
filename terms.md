@@ -1,8 +1,3 @@
-
-Je dois rédiger des conditions d'utilisation pour un robot Discord qui a deux fonctionnalités principales : rechercher des livres et des séries via une API, et enregistrer les noms de profil MyAnimeList et MangaCollec pour les afficher ultérieurement avec l'URL du profil. Je vais structurer le texte en sections pour couvrir tous les aspects essentiels des conditions d'utilisation. Voici un plan pour les sections que je pourrais inclure : introduction, acceptation des termes, description du service, utilisation acceptable, confidentialité et protection des données, limitations de responsabilité, modifications des conditions, et contact.
-
-Je vais commencer par l'introduction qui décrit brièvement le service.
-
 ### Introduction
 Bienvenue sur notre robot Discord dédié à la recherche de livres et de séries. En utilisant notre robot, vous acceptez les conditions d'utilisation décrites ci-dessous. Veuillez les lire attentivement.
 
