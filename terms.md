@@ -1,3 +1,5 @@
+# Conditions d'utilisation du service
+
 ### Introduction
 Bienvenue sur notre robot Discord dédié à la recherche de mangas, manhwas, manhuas, de séries et de films animés. En utilisant notre robot, vous acceptez les conditions d'utilisation décrites ci-dessous. Veuillez les lire attentivement.
 
