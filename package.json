@@ -1,0 +1,31 @@
+{
+  "name": "Camp-World",
+  "version": "1.0.0",
+  "description": "Robot de recherche de mangas et d'animés, et de gestion de profil MyAnimeList, AniList et MangaCollec pour Discord.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node ./dist/index.js",
+    "deploy": "node dist/deploy-commands.js"
+  },
+  "dependencies": {
+    "axios": "^1.9.0",
+    "cheerio": "^1.0.0",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.5.0",
+    "luxon": "^3.7.2",
+    "mariadb": "^3.4.2",
+    "pm2": "^6.0.6"
+  },
+  "devDependencies": {
+    "@types/luxon": "^3.7.1",
+    "globals": "^16.3.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "private": true,
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
+}
