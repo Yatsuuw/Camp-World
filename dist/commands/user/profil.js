@@ -41,10 +41,10 @@ function buildProfileUrl(site, username) {
 const profilCommand = {
     data: new discord_js_1.SlashCommandBuilder()
         .setName('profil')
-        .setDescription('Affiche ton profil MyAnimeList / AniList ou MangaCollec.')
+        .setDescription('Affiche ton profil MyAnimeList, AniList ou MangaCollec.')
         .addStringOption((option) => option
         .setName('type')
-        .setDescription('Choississez entre MyAnimeList/AniList et MangaCollec.')
+        .setDescription('Choississez entre MyAnimeList, AniList et MangaCollec.')
         .addChoices({ name: 'MyAnimeList', value: 'mal' }, { name: 'AniList', value: 'al' }, { name: 'MangaCollec', value: 'mangacollec' })
         .setRequired(true))
         .addUserOption((option) => option
@@ -90,7 +90,7 @@ const profilCommand = {
                 }
                 const profileUrl = buildProfileUrl('mal', username);
                 const hasValidUrl = isValidUrl(profileUrl);
-                const thumbnailPath = path_1.default.resolve('./src/assets/mal_logo.png');
+                const thumbnailPath = path_1.default.resolve('./dist/assets/mal_logo.png');
                 const embed = new discord_js_1.EmbedBuilder()
                     .setAuthor({
                     name: `Profil MyAnimeList de ${user.username}`,
@@ -125,7 +125,7 @@ const profilCommand = {
                 const profileUrl = buildProfileUrl('al', username);
                 const hasValidUrl = isValidUrl(profileUrl);
                 const urlForEmbed = hasValidUrl ? profileUrl : null;
-                const thumbnailPath = path_1.default.resolve('./src/assets/al_logo.png');
+                const thumbnailPath = path_1.default.resolve('./dist/assets/al_logo.png');
                 const embed = new discord_js_1.EmbedBuilder()
                     .setAuthor({
                     name: `Profil AniList de ${user.username}`,
@@ -161,7 +161,7 @@ const profilCommand = {
                 const profileUrl = buildProfileUrl('mangacollec', username);
                 const hasValidUrl = isValidUrl(profileUrl);
                 const urlForEmbed = hasValidUrl ? profileUrl : null;
-                const thumbnailPath = path_1.default.resolve('./src/assets/mangacollec_logo.png');
+                const thumbnailPath = path_1.default.resolve('./dist/assets/mangacollec_logo.png');
                 const embed = new discord_js_1.EmbedBuilder()
                     .setAuthor({
                     name: `Profil MangaCollec de ${user.username}`,

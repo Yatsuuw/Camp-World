@@ -43,7 +43,7 @@ async function upsertUserField(params) {
 const configCommand = {
     data: new discord_js_1.SlashCommandBuilder()
         .setName('config_profil')
-        .setDescription('Configurez votre profil MyAnimeList/AniList ou votre identifiant MangaCollec.')
+        .setDescription('Configurez votre profil MyAnimeList, AniList ou votre identifiant MangaCollec.')
         .addStringOption((option) => option
         .setName('type')
         .setDescription('Choisissez la plateforme à configurer.')
@@ -62,7 +62,7 @@ const configCommand = {
                 const ok = await (0, isServerInitialized_1.isServerInitialized)(interaction.guild.id);
                 if (!ok) {
                     await (0, reply_1.safeReply)(interaction, "Ce serveur n'est pas initialisé dans la base de données. Contactez un administrateur.", 'config');
-                    (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - Échec hors serveur`, { source: 'config_profil', includeStack: false });
+                    (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - Échec serveur non initialisé`, { source: 'config_profil', includeStack: false });
                     return;
                 }
             }
