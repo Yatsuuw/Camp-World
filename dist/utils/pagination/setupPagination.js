@@ -18,6 +18,7 @@ async function setupPagination(interaction, results, generateEmbed) {
     }
     let index = 0;
     let message;
+    let wasDeleted = false;
     try {
         message = await interaction.editReply({
             embeds: [await generateEmbed(results[index], index)],
@@ -50,6 +51,7 @@ async function setupPagination(interaction, results, generateEmbed) {
                 });
             }
             if (btn.customId === 'delete') {
+                wasDeleted = true;
                 collector.stop('deleted');
                 return await interaction.deleteReply();
             }
@@ -69,7 +71,9 @@ async function setupPagination(interaction, results, generateEmbed) {
     collector.on('end', async (_, reason) => {
         if (reason !== 'selected') {
             try {
-                await interaction.editReply({ components: [] });
+                if (!wasDeleted) {
+                    await interaction.editReply({ components: [] });
+                }
             }
             catch (error) {
                 (0, handleErrorOptions_1.handleError)(error, {
