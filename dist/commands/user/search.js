@@ -45,7 +45,9 @@ const searchCommand = {
                 return;
             }
             try {
-                await interaction.deferReply();
+                if (!interaction.deferred && !interaction.replied) {
+                    await interaction.deferReply();
+                }
             }
             catch (error) {
                 await (0, handleErrorOptions_1.handleInteractionError)(interaction, error, {
@@ -53,7 +55,6 @@ const searchCommand = {
                     logMessage: 'Echec de deferReply.',
                     includeStack: true,
                 });
-                await (0, reply_1.safeReply)(interaction, '🔎 Recherche en cours…', 'search');
                 return;
             }
             if (type === 'anime') {
