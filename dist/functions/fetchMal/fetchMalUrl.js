@@ -43,7 +43,7 @@ async function getMalUrl(kind, nameJa) {
             node?.alternative_titles?.ja,
             node?.title,
         ];
-        if (malTitlesToCompare.some(title => normalize(title) === normInput)) {
+        if (malTitlesToCompare.some((title) => normalize(title) === normInput)) {
             return kind === 'anime' ? `https://myanimelist.net/anime/${id}` : `https://myanimelist.net/manga/${id}`;
         }
         return null;
