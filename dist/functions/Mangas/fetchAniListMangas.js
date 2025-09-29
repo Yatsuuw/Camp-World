@@ -7,7 +7,7 @@ exports.default = fetchAniListMangas;
 const axios_1 = __importDefault(require("axios"));
 const discord_js_1 = require("discord.js");
 const setupPagination_1 = require("../../utils/pagination/setupPagination");
-const getMalMangaUrl_1 = require("./getMalMangaUrl");
+const fetchMalUrl_1 = require("../fetchMal/fetchMalUrl");
 const handleErrorOptions_1 = require("../logs/handleErrorOptions");
 const log_1 = require("../logs/log");
 async function fetchAniListMangas(query, interaction) {
@@ -90,7 +90,7 @@ async function fetchAniListMangas(query, interaction) {
                 .map((e) => e?.node?.name?.full)));
             let malUrl = null;
             try {
-                malUrl = await (0, getMalMangaUrl_1.getMalMangaUrl)(manga.title?.native);
+                malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.native);
             }
             catch (mapErr) {
                 await (0, handleErrorOptions_1.handleInteractionError)(interaction, mapErr, {
@@ -108,7 +108,7 @@ async function fetchAniListMangas(query, interaction) {
                 .setURL(manga.siteUrl)
                 .setImage(manga.coverImage?.extraLarge ?? null)
                 .setDescription(strip(manga.description))
-                .addFields({ name: "Score moyen", value: manga.averageScore ? `${manga.averageScore}/100` : "Non noté", inline: true }, { name: "Classement global", value: globalRank ? `${globalRank}` : "Non classé", inline: true }, { name: "Popularité", value: manga.popularity ? `#${manga.popularity}` : "Inconnue", inline: true }, { name: "Chapitres", value: manga.chapters?.toString() ?? "Inconnu", inline: true }, { name: "Volumes", value: manga.volumes?.toString() ?? "Inconnu", inline: true }, { name: "Genres", value: (manga.genres || []).join(", ") || "Non précisé", inline: false }, { name: "Auteur(s)", value: authors.length ? authors.join(", ") : "Inconnu", inline: false }, { name: "Titres alternatifs", value: alts.length ? alts.join(" | ") : "Aucun", inline: false }, { name: "Début publication", value: formatDate(manga.startDate), inline: true }, { name: "Fin publication", value: formatDate(manga.endDate), inline: true }, { name: "Liens", value: `[AniList](${manga.siteUrl})${malUrl ? ` | [MyAnimeList](${malUrl})` : " | MyAnimeList: introuvable"}`, inline: false })
+                .addFields({ name: "Score moyen", value: manga.averageScore ? `${manga.averageScore}/100` : "Non noté", inline: true }, { name: "Classement global", value: globalRank ? `${globalRank}` : "Non classé", inline: true }, { name: "Popularité", value: manga.popularity ? `#${manga.popularity}` : "Inconnue", inline: true }, { name: "Chapitres", value: manga.chapters?.toString() ?? "Inconnu", inline: true }, { name: "Volumes", value: manga.volumes?.toString() ?? "Inconnu", inline: true }, { name: "Genres", value: (manga.genres || []).join(", ") || "Non précisé", inline: false }, { name: "Auteur(s)", value: authors.length ? authors.join(", ") : "Inconnu", inline: false }, { name: "Titres alternatifs", value: alts.length ? alts.join(" | ") : "Aucun", inline: false }, { name: "Début publication", value: formatDate(manga.startDate), inline: true }, { name: "Fin publication", value: formatDate(manga.endDate), inline: true }, { name: "Liens", value: `[AniList](${manga.siteUrl})${malUrl ? ` | [MyAnimeList](${malUrl})` : " | Ce manga est introuvable sur MyAnimeList"}`, inline: false })
                 .setFooter({
                 text: `Résultat ${index + 1}/${results.length}`,
                 iconURL: interaction.user.avatarURL() || undefined

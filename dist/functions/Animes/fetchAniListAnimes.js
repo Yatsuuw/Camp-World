@@ -7,7 +7,7 @@ exports.default = fetchAniListAnimes;
 const axios_1 = __importDefault(require("axios"));
 const discord_js_1 = require("discord.js");
 const setupPagination_1 = require("../../utils/pagination/setupPagination");
-const getMalAnimeUrl_1 = require("./getMalAnimeUrl");
+const fetchMalUrl_1 = require("../fetchMal/fetchMalUrl");
 const handleErrorOptions_1 = require("../logs/handleErrorOptions");
 const log_1 = require("../logs/log");
 async function fetchAniListAnimes(query, interaction) {
@@ -95,7 +95,7 @@ async function fetchAniListAnimes(query, interaction) {
             const desc = descRaw.length > 1024 ? (descRaw.slice(0, 1021) + "...") : descRaw;
             let malUrl = null;
             try {
-                malUrl = await (0, getMalAnimeUrl_1.getMalAnimeUrl)(anime.title?.native);
+                malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.native);
             }
             catch (mapErr) {
                 await (0, handleErrorOptions_1.handleInteractionError)(interaction, mapErr, {
@@ -110,7 +110,7 @@ async function fetchAniListAnimes(query, interaction) {
                 .setURL(anime.siteUrl)
                 .setImage(anime.coverImage?.extraLarge ?? null)
                 .setDescription(desc)
-                .addFields({ name: "Statut", value: anime.status || "Inconnu", inline: true }, { name: "Popularité", value: anime.popularity ? `#${anime.popularity}` : "Inconnue", inline: true }, { name: "Classement global", value: globalRank, inline: true }, { name: "Source", value: anime.source || "Inconnue", inline: true }, { name: "Favoris", value: anime.favourites?.toString() || "0", inline: true }, { name: "Score moyen", value: anime.averageScore?.toString() || "Non noté", inline: true }, { name: "Épisodes", value: anime.episodes?.toString() || "Inconnu", inline: true }, { name: "Durée/épisode", value: anime.duration ? `${anime.duration} min` : "Inconnue", inline: true }, { name: "Genres", value: (anime.genres || []).join(", ") || "Non précisé", inline: false }, { name: "Studios", value: studios.length ? studios.join(", ") : "Inconnu", inline: false }, { name: "Titres alternatifs", value: alts.length ? alts.join(" | ") : "Aucun", inline: false }, { name: "Début", value: formatDate(anime.startDate), inline: true }, { name: "Fin", value: formatDate(anime.endDate), inline: true }, { name: "Liens", value: `[AniList](${anime.siteUrl})${malUrl ? ` | [MyAnimeList](${malUrl})` : " | MyAnimeList: introuvable"}`, inline: false })
+                .addFields({ name: "Statut", value: anime.status || "Inconnu", inline: true }, { name: "Popularité", value: anime.popularity ? `#${anime.popularity}` : "Inconnue", inline: true }, { name: "Classement global", value: globalRank, inline: true }, { name: "Source", value: anime.source || "Inconnue", inline: true }, { name: "Favoris", value: anime.favourites?.toString() || "0", inline: true }, { name: "Score moyen", value: anime.averageScore?.toString() || "Non noté", inline: true }, { name: "Épisodes", value: anime.episodes?.toString() || "Inconnu", inline: true }, { name: "Durée/épisode", value: anime.duration ? `${anime.duration} min` : "Inconnue", inline: true }, { name: "Genres", value: (anime.genres || []).join(", ") || "Non précisé", inline: false }, { name: "Studios", value: studios.length ? studios.join(", ") : "Inconnu", inline: false }, { name: "Titres alternatifs", value: alts.length ? alts.join(" | ") : "Aucun", inline: false }, { name: "Début", value: formatDate(anime.startDate), inline: true }, { name: "Fin", value: formatDate(anime.endDate), inline: true }, { name: "Liens", value: `[AniList](${anime.siteUrl})${malUrl ? ` | [MyAnimeList](${malUrl})` : " | Cet animé est introuvable sur MyAnimeList"}`, inline: false })
                 .setFooter({ text: `Résultat ${index + 1}/${results.length}`, iconURL: interaction.user.avatarURL() ?? undefined })
                 .setColor("#1da0f2")
                 .setTimestamp();
