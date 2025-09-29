@@ -1,8 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.log = log;
+exports.extractAniListApiErrorMessage = extractAniListApiErrorMessage;
 const writeLogToFile_1 = require("./writeLogToFile");
 const luxon_1 = require("luxon");
+const axios_1 = __importDefault(require("axios"));
 function log(level, message, options = {}) {
     const { source = 'system', includeStack = false } = options;
     const timestamp = luxon_1.DateTime.now().setZone('Europe/Paris').toFormat('yyyy-LL-dd HH:mm:ss');
@@ -50,4 +55,19 @@ function log(level, message, options = {}) {
         includeStack,
         stack: includeStack ? logPayload.stack : undefined,
     });
+}
+function extractAniListApiErrorMessage(err) {
+    try {
+        if (!axios_1.default.isAxiosError(err))
+            return undefined;
+        const data = err.response?.data;
+        if (!data)
+            return undefined;
+        if (typeof data === 'string')
+            return data;
+        return data?.errors?.[0]?.message ?? data?.message ?? undefined;
+    }
+    catch {
+        return undefined;
+    }
 }

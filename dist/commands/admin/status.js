@@ -28,8 +28,8 @@ const statusCommand = {
                 }
             }
             const action = interaction.options.getString('action', true);
+            const location = interaction.guild ? 'serveur' : 'messages privés';
             await interaction.deferReply({ flags: 64 });
-            (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${action} - Réussite en serveur`, { source: 'status', includeStack: false });
             if (interaction.user.id !== process.env.OWNER_ID) {
                 await (0, reply_1.safeReply)(interaction, "Seule la propriétaire du robot a la permission d'exécuter cette commande.", 'status');
                 return;
@@ -91,6 +91,7 @@ const statusCommand = {
                     await (0, reply_1.safeReply)(interaction, '❌ Action inconnue.', 'status');
                     break;
             }
+            (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${action} - Réussite en ${location}`, { source: 'status', includeStack: false });
         }
         catch (err) {
             await (0, handleErrorOptions_1.handleInteractionError)(interaction, err, {

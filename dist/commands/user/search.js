@@ -39,7 +39,7 @@ const searchCommand = {
             const typeOpt = interaction.options.getString('type', true);
             const type = typeOpt;
             const query = (interaction.options.getString('titre', true) || '').trim();
-            (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${type} - ${query} - Réussite en serveur`, { source: 'search', includeStack: false });
+            const location = interaction.guild ? 'serveur' : 'messages privés';
             if (!query) {
                 await (0, reply_1.safeReply)(interaction, 'Veuillez fournir un titre non vide.', 'search');
                 return;
@@ -62,6 +62,7 @@ const searchCommand = {
             else {
                 await (0, fetchAniListMangas_1.default)(query, interaction);
             }
+            (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${type} - ${query} - Réussite en ${location}`, { source: 'search', includeStack: false });
         }
         catch (err) {
             await (0, handleErrorOptions_1.handleInteractionError)(interaction, err, {

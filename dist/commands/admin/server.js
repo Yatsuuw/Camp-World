@@ -27,7 +27,6 @@ const serverCommand = {
             (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - Échec hors serveur`, { source: 'server', includeStack: false });
             return;
         }
-        (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${action} - ${guildName} - Réussite en serveur`, { source: 'server', includeStack: false });
         try {
             const initialized = await (0, isServerInitialized_1.isServerInitialized)(serverId);
             if (action === 'init') {
@@ -67,6 +66,7 @@ const serverCommand = {
                 });
                 return;
             }
+            (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${action} - ${guildName} - Réussite en serveur`, { source: 'server', includeStack: false });
         }
         catch (err) {
             await (0, handleErrorOptions_1.handleInteractionError)(interaction, err, {

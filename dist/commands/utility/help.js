@@ -10,7 +10,7 @@ const helpCommand = {
         .setContexts(0, 1, 2)
         .setIntegrationTypes(0, 1),
     async execute(interaction) {
-        (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - Réussite`, { source: 'help', includeStack: false });
+        const location = interaction.guild ? 'serveur' : 'messages privés';
         const embed = new discord_js_1.EmbedBuilder()
             .setTitle('Aide')
             .setThumbnail(interaction.client.user.displayAvatarURL() || null)
@@ -33,6 +33,7 @@ const helpCommand = {
         await interaction.reply({
             embeds: [embed],
         });
+        (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - Réussite en ${location}`, { source: 'help', includeStack: false });
     }
 };
 exports.default = helpCommand;

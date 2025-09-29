@@ -71,7 +71,7 @@ const configCommand = {
             const type = typeOpt;
             const rawName = interaction.options.getString('nom', true);
             const username = sanitizeInput(rawName);
-            (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${type} - ${username} - Réussite en serveur`, { source: 'config_profil', includeStack: false });
+            const location = interaction.guild ? 'serveur' : 'messages privés';
             if (!username) {
                 await (0, reply_1.safeReply)(interaction, "Nom invalide: veuillez fournir un identifiant non vide.", 'config');
                 return;
@@ -91,6 +91,7 @@ const configCommand = {
             }
             const website = toWebsiteLabel(type);
             await (0, reply_1.safeReply)(interaction, `Votre configuration ${website} a été mise à jour.`, 'config');
+            (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${type} - ${username} - Réussite en ${location}`, { source: 'config_profil', includeStack: false });
         }
         catch (err) {
             await (0, handleErrorOptions_1.handleInteractionError)(interaction, err, {

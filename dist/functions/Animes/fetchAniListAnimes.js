@@ -9,6 +9,7 @@ const discord_js_1 = require("discord.js");
 const setupPagination_1 = require("../../utils/pagination/setupPagination");
 const getMalAnimeUrl_1 = require("./getMalAnimeUrl");
 const handleErrorOptions_1 = require("../logs/handleErrorOptions");
+const log_1 = require("../logs/log");
 async function fetchAniListAnimes(query, interaction) {
     try {
         const url = process.env.AL_API_BASE || '';
@@ -56,10 +57,11 @@ async function fetchAniListAnimes(query, interaction) {
             response = await axios_1.default.post(url, { query: query_api, variables: { search: query, perPage: 10 } }, { headers: { "Content-Type": "application/json" } });
         }
         catch (apiErr) {
+            const apiMessage = (0, log_1.extractAniListApiErrorMessage)(apiErr);
             await (0, handleErrorOptions_1.handleInteractionError)(interaction, apiErr, {
                 source: 'fetchAniListAnimes',
-                userMessage: '❌ Erreur réseau AniList: réessayez plus tard.',
-                logMessage: 'Appel AniList (anime) échoué',
+                userMessage: apiMessage ? `❌ AniList: ${String(apiMessage).slice(0, 400)}` : '❌ Erreur réseau AniList: réessayez plus tard.',
+                logMessage: apiMessage ? `Appel AniList (anime) échoué - apiMessage: ${apiMessage}` : 'Appel AniList (anime) échoué',
                 includeStack: true
             });
             return;
@@ -117,10 +119,11 @@ async function fetchAniListAnimes(query, interaction) {
             await (0, setupPagination_1.setupPagination)(interaction, results, async (anime, index) => generateEmbed(anime, index));
         }
         catch (pErr) {
+            const apiMessage = (0, log_1.extractAniListApiErrorMessage)(pErr);
             await (0, handleErrorOptions_1.handleInteractionError)(interaction, pErr, {
                 source: 'fetchAniListAnimes',
-                userMessage: '❌ Erreur d’affichage des résultats.',
-                logMessage: 'Pagination (anime) échouée',
+                userMessage: apiMessage ? `❌ AniList: ${String(apiMessage).slice(0, 400)}` : '❌ Erreur d’affichage des résultats.',
+                logMessage: apiMessage ? `Pagination (anime) échouée - apiMessage: ${apiMessage}` : 'Pagination (anime) échouée',
                 includeStack: true
             });
         }

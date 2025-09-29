@@ -68,7 +68,7 @@ const profilCommand = {
             const target = interaction.options.getUser('membre', false);
             const user = target ?? interaction.user;
             const userId = user.id;
-            (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${type} - ${user}`, { source: 'profil', includeStack: false });
+            const location = interaction.guild ? 'serveur' : 'messages privés';
             const requesterTag = interaction.user.tag;
             const requesterIcon = interaction.user.displayAvatarURL();
             const userIcon = user.displayAvatarURL();
@@ -104,7 +104,6 @@ const profilCommand = {
                     : `Lien de profil MyAnimeList indisponible.`)
                     .setFooter({ text: `Demandé par ${requesterTag}`, iconURL: requesterIcon });
                 await interaction.reply({ embeds: [embed], files: [thumbnailPath] });
-                return;
             }
             else if (type === 'al') {
                 let rows = [];
@@ -140,7 +139,6 @@ const profilCommand = {
                     : `Lien de profil AniList indisponible.`)
                     .setFooter({ text: `Demandé par ${requesterTag}`, iconURL: requesterIcon });
                 await interaction.reply({ embeds: [embed], files: [thumbnailPath] });
-                return;
             }
             else if (type === 'mangacollec') {
                 let rows = [];
@@ -177,11 +175,13 @@ const profilCommand = {
                     .setTimestamp()
                     .setFooter({ text: `Demandé par ${requesterTag}`, iconURL: requesterIcon });
                 await interaction.reply({ embeds: [embed], files: [thumbnailPath] });
-                return;
             }
             else {
                 await (0, reply_1.safeReply)(interaction, 'Type de profil inconnu. Choisissez MyAnimeList, AniList ou MangaCollec.', 'profil');
+                return;
             }
+            (0, log_1.log)('info', `${interaction.user.globalName} (${interaction.user.id}) - ${type} - ${user} - Réussite en ${location}`, { source: 'profil', includeStack: false });
+            return;
         }
         catch (err) {
             await (0, handleErrorOptions_1.handleInteractionError)(interaction, err, {
