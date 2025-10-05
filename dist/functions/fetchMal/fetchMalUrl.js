@@ -30,10 +30,10 @@ async function getMalUrl(kind, nameJa) {
             if (!s)
                 return null;
             try {
-                return String(s).normalize('NFC').replace(/\s+/g, ' ').trim().toLowerCase();
+                return String(s).normalize('NFC').replace(/\s+/g, ' ').trim();
             }
             catch {
-                return String(s).trim().toLowerCase();
+                return String(s).trim();
             }
         };
         const normInput = normalize(nameJa);
@@ -43,7 +43,7 @@ async function getMalUrl(kind, nameJa) {
             node?.alternative_titles?.ja,
             node?.title,
         ];
-        if (malTitlesToCompare.some((title) => normalize(title) === normInput)) {
+        if (malTitlesToCompare.some(title => normalize(title) === normInput)) {
             return kind === 'anime' ? `https://myanimelist.net/anime/${id}` : `https://myanimelist.net/manga/${id}`;
         }
         return null;
