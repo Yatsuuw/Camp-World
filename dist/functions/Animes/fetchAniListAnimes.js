@@ -93,20 +93,9 @@ async function fetchAniListAnimes(query, interaction) {
                 .map((t) => String(t).trim());
             const descRaw = anime.description ? strip(anime.description) : "Synopsis non disponible.";
             const desc = descRaw.length > 1024 ? (descRaw.slice(0, 1021) + "...") : descRaw;
-            let malUrl = null;
-            try {
-                malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.native);
-                if (!malUrl) {
-                    malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.romaji);
-                }
-            }
-            catch (mapErr) {
-                await (0, handleErrorOptions_1.handleInteractionError)(interaction, mapErr, {
-                    source: 'fetchAniListAnimes',
-                    userMessage: 'ℹ️ Lien MAL indisponible pour ce résultat.',
-                    logMessage: 'Résolution lien MAL (anime) échouée',
-                    includeStack: false
-                });
+            let malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.native);
+            if (!malUrl) {
+                malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.romaji);
             }
             return new discord_js_1.EmbedBuilder()
                 .setTitle(anime.title?.english || anime.title?.romaji || anime.title?.native || "Titre inconnu")
