@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getMalUrl = getMalUrl;
 const axios_1 = __importDefault(require("axios"));
 const handleErrorOptions_1 = require("../logs/handleErrorOptions");
+const log_1 = require("../logs/log");
 async function getMalUrl(kind, nameJa) {
     try {
         const base = process.env.MAL_API_BASE || '';
@@ -44,6 +45,7 @@ async function getMalUrl(kind, nameJa) {
             node?.title,
         ];
         if (malTitlesToCompare.some(title => normalize(title) === normInput)) {
+            (0, log_1.log)('info', `${malTitlesToCompare}, ${normInput}`, { source: 'fetchMalUrl', includeStack: false });
             return kind === 'anime' ? `https://myanimelist.net/anime/${id}` : `https://myanimelist.net/manga/${id}`;
         }
         return null;
