@@ -96,6 +96,9 @@ async function fetchAniListAnimes(query, interaction) {
             let malUrl = null;
             try {
                 malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.native);
+                if (!malUrl) {
+                    malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.romaji);
+                }
             }
             catch (mapErr) {
                 await (0, handleErrorOptions_1.handleInteractionError)(interaction, mapErr, {
