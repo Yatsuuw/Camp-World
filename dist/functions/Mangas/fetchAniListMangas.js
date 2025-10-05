@@ -71,20 +71,6 @@ async function fetchAniListMangas(query, interaction) {
             });
             return;
         }
-        const processedResults = [];
-        for (const manga of results) {
-            let malUrl = null;
-            try {
-                malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.native);
-                if (!malUrl) {
-                    malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.romaji);
-                }
-            }
-            catch (mapErr) {
-                /* L'erreur est déjà gérée dans getMalUrl, on continue */
-            }
-            processedResults.push({ ...manga, malUrl });
-        }
         const formatDate = (d) => d?.year ? `${d.year}-${String(d.month).padStart(2, "0")}-${String(d.day).padStart(2, "0")}` : "Inconnu";
         const stripHtmlTags = (text) => text.replace(/<\/?[^>]+(>|$)/g, "").replace(/\n+/g, " ").trim();
         const strip = (str) => str ? stripHtmlTags(str).slice(0, 1021) + (str.length > 1024 ? "..." : "") : "Synopsis non disponible.";
@@ -102,7 +88,10 @@ async function fetchAniListMangas(query, interaction) {
             const authors = Array.from(new Set((manga.staff?.edges || [])
                 .filter((e) => e?.role && humanRoles.some((hr) => String(e.role).toLowerCase().includes(hr)))
                 .map((e) => e?.node?.name?.full)));
-            const malUrl = manga.malUrl;
+            let malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.native);
+            if (!malUrl) {
+                malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.romaji);
+            }
             return new discord_js_1.EmbedBuilder()
                 .setTitle(manga.title.english
                 || manga.title.romaji
@@ -113,14 +102,14 @@ async function fetchAniListMangas(query, interaction) {
                 .setDescription(strip(manga.description))
                 .addFields({ name: "Score moyen", value: manga.averageScore ? `${manga.averageScore}/100` : "Non noté", inline: true }, { name: "Classement global", value: globalRank ? `${globalRank}` : "Non classé", inline: true }, { name: "Popularité", value: manga.popularity ? `#${manga.popularity}` : "Inconnue", inline: true }, { name: "Chapitres", value: manga.chapters?.toString() ?? "Inconnu", inline: true }, { name: "Volumes", value: manga.volumes?.toString() ?? "Inconnu", inline: true }, { name: "Genres", value: (manga.genres || []).join(", ") || "Non précisé", inline: false }, { name: "Auteur(s)", value: authors.length ? authors.join(", ") : "Inconnu", inline: false }, { name: "Titres alternatifs", value: alts.length ? alts.join(" | ") : "Aucun", inline: false }, { name: "Début publication", value: formatDate(manga.startDate), inline: true }, { name: "Fin publication", value: formatDate(manga.endDate), inline: true }, { name: "Liens", value: `[AniList](${manga.siteUrl})${malUrl ? ` | [MyAnimeList](${malUrl})` : " | Ce manga est introuvable sur MyAnimeList"}`, inline: false })
                 .setFooter({
-                text: `Résultat ${index + 1}/${processedResults.length}`,
+                text: `Résultat ${index + 1}/${results.length}`,
                 iconURL: interaction.user.avatarURL() || undefined
             })
                 .setColor("#1da0f2")
                 .setTimestamp();
         };
         try {
-            await (0, setupPagination_1.setupPagination)(interaction, processedResults, async (manga, index) => generateEmbed(manga, index));
+            await (0, setupPagination_1.setupPagination)(interaction, results, async (manga, index) => generateEmbed(manga, index));
         }
         catch (pErr) {
             const apiMessage = (0, log_1.extractAniListApiErrorMessage)(pErr);
