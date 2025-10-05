@@ -17,7 +17,7 @@ async function getMalUrl(kind, nameJa) {
             params: {
                 q: nameJa,
                 limit: 1,
-                fields: 'id,title,alternative_titles',
+                fields: 'id,title',
                 nsfw: true
             },
             headers: { 'X-MAL-CLIENT-ID': clientId }
@@ -26,24 +26,28 @@ async function getMalUrl(kind, nameJa) {
         const id = node?.id;
         if (!id)
             return null;
+        let malTitle;
+        try {
+            malTitle = node?.title ?? node?.title?.native ?? node?.title?.romaji ?? node?.title?.english ?? undefined;
+            if (typeof malTitle !== 'string')
+                malTitle = undefined;
+        }
+        catch {
+            malTitle = undefined;
+        }
         const normalize = (s) => {
             if (!s)
                 return null;
             try {
-                return String(s).normalize('NFC').replace(/\s+/g, ' ').trim();
+                return String(s).normalize('NFC').replace(/\s+/g, ' ').trim().toLowerCase();
             }
             catch {
-                return String(s).trim();
+                return String(s).trim().toLowerCase();
             }
         };
         const normInput = normalize(nameJa);
-        if (!normInput)
-            return null;
-        const malTitlesToCompare = [
-            node?.alternative_titles?.ja,
-            node?.title,
-        ];
-        if (malTitlesToCompare.some(title => normalize(title) === normInput)) {
+        const normMal = normalize(malTitle);
+        if (normInput && normMal && normInput === normMal) {
             return kind === 'anime' ? `https://myanimelist.net/anime/${id}` : `https://myanimelist.net/manga/${id}`;
         }
         return null;
@@ -51,9 +55,9 @@ async function getMalUrl(kind, nameJa) {
     catch (error) {
         (0, handleErrorOptions_1.handleError)(error, {
             source: 'fetchMalUrl',
-            logMessage: `Erreur lors de la requête MyAnimeList (${kind}) pour \"${nameJa}\".`,
+            logMessage: `Erreur lors de la requête MyAnimeList (${kind}) pour "${nameJa}".`,
             includeStack: true
         });
-        return null;
+        throw error;
     }
 }

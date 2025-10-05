@@ -88,9 +88,20 @@ async function fetchAniListMangas(query, interaction) {
             const authors = Array.from(new Set((manga.staff?.edges || [])
                 .filter((e) => e?.role && humanRoles.some((hr) => String(e.role).toLowerCase().includes(hr)))
                 .map((e) => e?.node?.name?.full)));
-            let malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.native);
-            if (!malUrl) {
-                malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.romaji);
+            let malUrl = null;
+            try {
+                malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.native);
+                if (!malUrl) {
+                    malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.romaji);
+                }
+            }
+            catch (mapErr) {
+                await (0, handleErrorOptions_1.handleInteractionError)(interaction, mapErr, {
+                    source: 'fetchAniListMangas',
+                    userMessage: 'ℹ️ Lien MAL indisponible pour ce résultat.',
+                    logMessage: 'Résolution lien MAL (manga) échouée',
+                    includeStack: false
+                });
             }
             return new discord_js_1.EmbedBuilder()
                 .setTitle(manga.title.english

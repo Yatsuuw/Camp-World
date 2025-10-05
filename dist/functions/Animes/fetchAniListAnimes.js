@@ -76,14 +76,6 @@ async function fetchAniListAnimes(query, interaction) {
             });
             return;
         }
-        const processedResults = [];
-        for (const anime of results) {
-            let malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.native);
-            if (!malUrl) {
-                malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.romaji);
-            }
-            processedResults.push({ ...anime, malUrl });
-        }
         const formatDate = (d) => d?.year ? `${d.year}-${String(d.month).padStart(2, "0")}-${String(d.day).padStart(2, "0")}` : "Inconnu";
         const strip = (str) => str.replace(/<\/?[^>]+(>|$)/g, "").replace(/\n+/g, " ").trim();
         const generateEmbed = async (anime, index) => {
@@ -101,18 +93,30 @@ async function fetchAniListAnimes(query, interaction) {
                 .map((t) => String(t).trim());
             const descRaw = anime.description ? strip(anime.description) : "Synopsis non disponible.";
             const desc = descRaw.length > 1024 ? (descRaw.slice(0, 1021) + "...") : descRaw;
+            let malUrl = null;
+            try {
+                malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.native);
+            }
+            catch (mapErr) {
+                await (0, handleErrorOptions_1.handleInteractionError)(interaction, mapErr, {
+                    source: 'fetchAniListAnimes',
+                    userMessage: 'ℹ️ Lien MAL indisponible pour ce résultat.',
+                    logMessage: 'Résolution lien MAL (anime) échouée',
+                    includeStack: false
+                });
+            }
             return new discord_js_1.EmbedBuilder()
                 .setTitle(anime.title?.english || anime.title?.romaji || anime.title?.native || "Titre inconnu")
                 .setURL(anime.siteUrl)
                 .setImage(anime.coverImage?.extraLarge ?? null)
                 .setDescription(desc)
-                .addFields({ name: "Statut", value: anime.status || "Inconnu", inline: true }, { name: "Popularité", value: anime.popularity ? `#${anime.popularity}` : "Inconnue", inline: true }, { name: "Classement global", value: globalRank, inline: true }, { name: "Source", value: anime.source || "Inconnue", inline: true }, { name: "Favoris", value: anime.favourites?.toString() || "0", inline: true }, { name: "Score moyen", value: anime.averageScore?.toString() || "Non noté", inline: true }, { name: "Épisodes", value: anime.episodes?.toString() || "Inconnu", inline: true }, { name: "Durée/épisode", value: anime.duration ? `${anime.duration} min` : "Inconnue", inline: true }, { name: "Genres", value: (anime.genres || []).join(", ") || "Non précisé", inline: false }, { name: "Studios", value: studios.length ? studios.join(", ") : "Inconnu", inline: false }, { name: "Titres alternatifs", value: alts.length ? alts.join(" | ") : "Aucun", inline: false }, { name: "Début", value: formatDate(anime.startDate), inline: true }, { name: "Fin", value: formatDate(anime.endDate), inline: true }, { name: "Liens", value: `[AniList](${anime.siteUrl})${anime.malUrl ? ` | [MyAnimeList](${anime.malUrl})` : " | Cet animé est introuvable sur MyAnimeList"}`, inline: false })
-                .setFooter({ text: `Résultat ${index + 1}/${processedResults.length}`, iconURL: interaction.user.avatarURL() ?? undefined })
+                .addFields({ name: "Statut", value: anime.status || "Inconnu", inline: true }, { name: "Popularité", value: anime.popularity ? `#${anime.popularity}` : "Inconnue", inline: true }, { name: "Classement global", value: globalRank, inline: true }, { name: "Source", value: anime.source || "Inconnue", inline: true }, { name: "Favoris", value: anime.favourites?.toString() || "0", inline: true }, { name: "Score moyen", value: anime.averageScore?.toString() || "Non noté", inline: true }, { name: "Épisodes", value: anime.episodes?.toString() || "Inconnu", inline: true }, { name: "Durée/épisode", value: anime.duration ? `${anime.duration} min` : "Inconnue", inline: true }, { name: "Genres", value: (anime.genres || []).join(", ") || "Non précisé", inline: false }, { name: "Studios", value: studios.length ? studios.join(", ") : "Inconnu", inline: false }, { name: "Titres alternatifs", value: alts.length ? alts.join(" | ") : "Aucun", inline: false }, { name: "Début", value: formatDate(anime.startDate), inline: true }, { name: "Fin", value: formatDate(anime.endDate), inline: true }, { name: "Liens", value: `[AniList](${anime.siteUrl})${malUrl ? ` | [MyAnimeList](${malUrl})` : " | Cet animé est introuvable sur MyAnimeList"}`, inline: false })
+                .setFooter({ text: `Résultat ${index + 1}/${results.length}`, iconURL: interaction.user.avatarURL() ?? undefined })
                 .setColor("#1da0f2")
                 .setTimestamp();
         };
         try {
-            await (0, setupPagination_1.setupPagination)(interaction, processedResults, async (anime, index) => generateEmbed(anime, index));
+            await (0, setupPagination_1.setupPagination)(interaction, results, async (anime, index) => generateEmbed(anime, index));
         }
         catch (pErr) {
             const apiMessage = (0, log_1.extractAniListApiErrorMessage)(pErr);
