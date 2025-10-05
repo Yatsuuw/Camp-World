@@ -17,7 +17,7 @@ async function getMalUrl(kind, nameJa) {
             params: {
                 q: nameJa,
                 limit: 1,
-                fields: 'id,title',
+                fields: 'id,title,alternative_titles',
                 nsfw: true
             },
             headers: { 'X-MAL-CLIENT-ID': clientId }
@@ -26,28 +26,24 @@ async function getMalUrl(kind, nameJa) {
         const id = node?.id;
         if (!id)
             return null;
-        let malTitle;
-        try {
-            malTitle = node?.title ?? node?.title?.native ?? node?.title?.romaji ?? node?.title?.english ?? undefined;
-            if (typeof malTitle !== 'string')
-                malTitle = undefined;
-        }
-        catch {
-            malTitle = undefined;
-        }
         const normalize = (s) => {
             if (!s)
                 return null;
             try {
-                return String(s).normalize('NFC').replace(/\s+/g, ' ').trim().toLowerCase();
+                return String(s).normalize('NFC').replace(/\s+/g, ' ').trim();
             }
             catch {
-                return String(s).trim().toLowerCase();
+                return String(s).trim();
             }
         };
         const normInput = normalize(nameJa);
-        const normMal = normalize(malTitle);
-        if (normInput && normMal && normInput === normMal) {
+        if (!normInput)
+            return null;
+        const malTitlesToCompare = [
+            node?.alternative_titles?.ja,
+            node?.title,
+        ];
+        if (malTitlesToCompare.some(title => normalize(title) === normInput)) {
             return kind === 'anime' ? `https://myanimelist.net/anime/${id}` : `https://myanimelist.net/manga/${id}`;
         }
         return null;
