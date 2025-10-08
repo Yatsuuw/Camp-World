@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getMalUrl = getMalUrl;
 const axios_1 = __importDefault(require("axios"));
 const handleErrorOptions_1 = require("../logs/handleErrorOptions");
+const log_1 = require("../logs/log");
 async function getMalUrl(kind, nameJa) {
     try {
         const base = process.env.MAL_API_BASE || '';
@@ -17,36 +18,26 @@ async function getMalUrl(kind, nameJa) {
             params: {
                 q: nameJa,
                 limit: 1,
-                fields: 'id,title,alternative_titles',
+                fields: 'id',
                 nsfw: true
             },
             headers: { 'X-MAL-CLIENT-ID': clientId }
         });
+        (0, log_1.log)('debug', nameJa, { source: 'fetchMalUrl', includeStack: false });
         const node = response.data?.data?.[0]?.node;
         const id = node?.id;
         if (!id)
             return null;
-        const normalize = (s) => {
-            if (!s)
-                return null;
-            try {
-                return String(s).normalize('NFC').replace(/\s+/g, ' ').trim();
-            }
-            catch {
-                return String(s).trim();
-            }
-        };
-        const normInput = normalize(nameJa);
-        if (!normInput)
+        const japaneseTitle = node?.alternative_titles?.ja;
+        if (!japaneseTitle)
             return null;
-        const malTitlesToCompare = [
-            node?.alternative_titles?.ja,
-            node?.title,
-        ];
-        if (malTitlesToCompare.some(title => normalize(title) === normInput)) {
+        (0, log_1.log)('debug', japaneseTitle, { source: 'fetchMalUrl', includeStack: false });
+        if (nameJa === japaneseTitle) {
             return kind === 'anime' ? `https://myanimelist.net/anime/${id}` : `https://myanimelist.net/manga/${id}`;
         }
-        return null;
+        else {
+            return null;
+        }
     }
     catch (error) {
         (0, handleErrorOptions_1.handleError)(error, {

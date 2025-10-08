@@ -90,6 +90,7 @@ async function fetchAniListMangas(query, interaction) {
                 .map((e) => e?.node?.name?.full)));
             let malUrl = null;
             try {
+                (0, log_1.log)('debug', manga.title?.native, { source: 'fetchAniListMangas', includeStack: false });
                 malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.native);
                 if (!malUrl) {
                     malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', manga.title?.romaji);
