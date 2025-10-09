@@ -95,7 +95,6 @@ async function fetchAniListAnimes(query, interaction) {
             const desc = descRaw.length > 1024 ? (descRaw.slice(0, 1021) + "...") : descRaw;
             let malUrl = null;
             try {
-                (0, log_1.log)('debug', anime.title.native, { source: 'fetchAniListAnimes', includeStack: false });
                 malUrl = await (0, fetchMalUrl_1.getMalUrl)('anime', anime.title?.native);
                 if (!malUrl) {
                     malUrl = await (0, fetchMalUrl_1.getMalUrl)('manga', anime.title?.romaji);

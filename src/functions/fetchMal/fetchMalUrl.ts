@@ -25,16 +25,7 @@ export async function getMalUrl(kind: 'anime' | 'manga', nameJa: string | undefi
         const id: number | string | undefined = node?.id;
         if (!id) return null;
 
-        const japaneseTitle: string | null = node?.alternative_titles?.ja;
-        if (!japaneseTitle) return null;
-
-        log('debug', japaneseTitle, { source: 'fetchMalUrl', includeStack: false });
-
-        if (nameJa === japaneseTitle) {
-            return kind === 'anime' ? `https://myanimelist.net/anime/${id}` : `https://myanimelist.net/manga/${id}`;
-        } else {
-            return null;
-        }
+        return kind === 'anime' ? `https://myanimelist.net/anime/${id}` : `https://myanimelist.net/manga/${id}`;
     } catch (error: unknown) {
         handleError(error, {
             source: 'fetchMalUrl',

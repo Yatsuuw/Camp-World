@@ -116,7 +116,6 @@ export default async function fetchAniListAnimes(
 
             let malUrl: string | null = null;
             try {
-                log('debug', anime.title.native, { source: 'fetchAniListAnimes', includeStack: false });
                 malUrl = await getMalUrl('anime', anime.title?.native);
                 if (!malUrl) {
                     malUrl = await getMalUrl('manga', anime.title?.romaji);
