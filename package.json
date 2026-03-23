@@ -1,5 +1,5 @@
 {
-  "name": "Camp-World",
+  "name": "campworld",
   "version": "1.0.0",
   "description": "Robot de recherche de mangas et d'animés, et de gestion de profil MyAnimeList, AniList et MangaCollec pour Discord.",
   "main": "dist/index.js",
