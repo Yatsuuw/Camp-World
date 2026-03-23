@@ -21,7 +21,7 @@
     "@types/luxon": "^3.7.1",
     "globals": "^16.3.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   },
   "private": true,
   "keywords": [],
