@@ -11,7 +11,7 @@ yarn-error.log*
 .vscode/*
 /.idea
 /logs
-#/src
+/src
 .env
 tsconfig.json
 qodana.yaml
